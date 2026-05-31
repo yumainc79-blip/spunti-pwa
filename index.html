@@ -58,18 +58,14 @@
 </head>
 <body>
 
-<!-- ==================== HOME ==================== -->
 <section id="screen-home" class="screen">
-
   <div class="home-hero">
     <h1>Spunti</h1>
     <p class="motto">Cattura. Incuba. Distilla.</p>
   </div>
 
   <div class="home-cta">
-    <button class="btn btn-primary btn-full" id="btn-new-home">
-      + Nuovo spunto
-    </button>
+    <button class="btn btn-primary btn-full" id="btn-new-home">+ Nuovo spunto</button>
   </div>
 
   <div class="stats-grid">
@@ -97,25 +93,16 @@
 
   <p class="section-title">Spunti attivi</p>
   <div class="container" id="home-actives"></div>
-
 </section>
 
-<!-- ==================== LISTA ==================== -->
 <section id="screen-lista" class="screen">
-
   <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
     <h2>Tutti gli spunti</h2>
     <button class="btn btn-primary btn-sm" id="btn-new-lista">+ Nuovo</button>
   </div>
 
   <div class="filters-bar">
-    <input
-      type="search"
-      id="lista-search"
-      class="search-input"
-      placeholder="Cerca per titolo, tag, note…"
-      autocomplete="off"
-    />
+    <input type="search" id="lista-search" class="search-input" placeholder="Cerca per titolo, tag, note…" autocomplete="off" />
 
     <div class="filter-chips">
       <button class="chip active" data-filter-status="all">Tutti</button>
@@ -142,27 +129,17 @@
   </div>
 
   <div class="container" id="lista-items"></div>
-
 </section>
 
-<!-- ==================== FORM ==================== -->
 <section id="screen-form" class="screen">
-
   <div class="page-header">
     <h2 id="form-title">Nuovo spunto</h2>
   </div>
 
   <div class="form-screen">
-
     <div class="form-group">
       <label class="form-label" for="f-title">Titolo <span class="required">*</span></label>
-      <input
-        id="f-title"
-        type="text"
-        class="form-control"
-        placeholder="Di cosa si tratta?"
-        autocomplete="off"
-      />
+      <input id="f-title" type="text" class="form-control" placeholder="Di cosa si tratta?" autocomplete="off" />
       <p class="error-msg" id="f-title-error"></p>
     </div>
 
@@ -231,55 +208,23 @@
       <button class="btn btn-primary flex-1" id="btn-form-save">Salva</button>
       <button class="btn btn-secondary" id="btn-form-cancel">Annulla</button>
     </div>
-
   </div>
 </section>
 
-<!-- ==================== TREND ==================== -->
 <section id="screen-trend" class="screen">
-
-  <div class="page-header">
-    <h2>Trend</h2>
-  </div>
-
+  <div class="page-header"><h2>Trend</h2></div>
   <div class="container">
-
-    <div class="trend-section">
-      <p id="trend-recent" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;"></p>
-    </div>
-
-    <div class="trend-section">
-      <h3>Per stato</h3>
-      <div id="trend-status"></div>
-    </div>
-
-    <div class="trend-section">
-      <h3>Per tipo</h3>
-      <div id="trend-type"></div>
-    </div>
-
-    <div class="trend-section">
-      <h3>Energia richiesta</h3>
-      <div id="trend-energy"></div>
-    </div>
-
-    <div class="trend-section">
-      <h3>Tag più frequenti</h3>
-      <div id="trend-tags"></div>
-    </div>
-
+    <div class="trend-section"><p id="trend-recent" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;"></p></div>
+    <div class="trend-section"><h3>Per stato</h3><div id="trend-status"></div></div>
+    <div class="trend-section"><h3>Per tipo</h3><div id="trend-type"></div></div>
+    <div class="trend-section"><h3>Energia richiesta</h3><div id="trend-energy"></div></div>
+    <div class="trend-section"><h3>Tag più frequenti</h3><div id="trend-tags"></div></div>
   </div>
 </section>
 
-<!-- ==================== EXPORT ==================== -->
 <section id="screen-export" class="screen">
-
-  <div class="page-header">
-    <h2>Export &amp; Backup</h2>
-  </div>
-
+  <div class="page-header"><h2>Export &amp; Backup</h2></div>
   <div class="container">
-
     <div class="export-section">
       <h3>Analisi AI</h3>
       <div class="export-card">
@@ -297,16 +242,12 @@
       <div class="export-card">
         <h4>💾 Export JSON</h4>
         <p>Esporta tutti i dati in formato JSON. Usa questo file per il backup completo o per trasferire i dati su un altro dispositivo.</p>
-        <div class="export-btns">
-          <button class="btn btn-primary btn-sm" id="btn-export-json">Scarica JSON</button>
-        </div>
+        <div class="export-btns"><button class="btn btn-primary btn-sm" id="btn-export-json">Scarica JSON</button></div>
       </div>
       <div class="export-card">
         <h4>📊 Export CSV</h4>
         <p>Esporta in formato foglio di calcolo, compatibile con Excel, Google Sheets e Numbers.</p>
-        <div class="export-btns">
-          <button class="btn btn-secondary btn-sm" id="btn-export-csv">Scarica CSV</button>
-        </div>
+        <div class="export-btns"><button class="btn btn-secondary btn-sm" id="btn-export-csv">Scarica CSV</button></div>
       </div>
     </div>
 
@@ -315,37 +256,20 @@
       <div class="export-card">
         <h4>📂 Importa JSON</h4>
         <p>Importa un backup JSON precedentemente esportato. Gli spunti già presenti non vengono duplicati.</p>
-        <div class="export-btns">
-          <button class="btn btn-secondary btn-sm" id="btn-import-json">Scegli file…</button>
-        </div>
+        <div class="export-btns"><button class="btn btn-secondary btn-sm" id="btn-import-json">Scegli file…</button></div>
         <input type="file" id="import-file-input" accept=".json" style="display:none" />
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ==================== BOTTOM NAV ==================== -->
 <nav class="bottom-nav" role="navigation" aria-label="Navigazione principale">
-  <button class="nav-btn active" data-screen="home" aria-label="Home">
-    <span class="nav-icon">🏠</span>
-    <span>Home</span>
-  </button>
-  <button class="nav-btn" data-screen="lista" aria-label="Spunti">
-    <span class="nav-icon">📋</span>
-    <span>Spunti</span>
-  </button>
-  <button class="nav-btn" data-screen="trend" aria-label="Trend">
-    <span class="nav-icon">📈</span>
-    <span>Trend</span>
-  </button>
-  <button class="nav-btn" data-screen="export" aria-label="Export">
-    <span class="nav-icon">💾</span>
-    <span>Export</span>
-  </button>
+  <button class="nav-btn active" data-screen="home" aria-label="Home"><span class="nav-icon">🏠</span><span>Home</span></button>
+  <button class="nav-btn" data-screen="lista" aria-label="Spunti"><span class="nav-icon">📋</span><span>Spunti</span></button>
+  <button class="nav-btn" data-screen="trend" aria-label="Trend"><span class="nav-icon">📈</span><span>Trend</span></button>
+  <button class="nav-btn" data-screen="export" aria-label="Export"><span class="nav-icon">💾</span><span>Export</span></button>
 </nav>
 
-<!-- ==================== MODAL CONFIRM ==================== -->
 <div id="modal-confirm" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-heading">
   <div class="modal-box">
     <h3 id="modal-confirm-heading">Eliminare questo spunto?</h3>
@@ -357,43 +281,11 @@
   </div>
 </div>
 
-<!-- ==================== TOAST ==================== -->
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="./app.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    if (typeof TYPE_LABELS !== 'undefined') {
-      TYPE_LABELS.comprare_provare = 'Provare/Comprare';
-      TYPE_LABELS.clinico_professionale = 'Professionale';
-      TYPE_LABELS.vita_personale = 'Personale';
-      TYPE_LABELS.rilassamento = 'Relax';
-    }
-
-    if (typeof TYPE_EMOJI !== 'undefined') {
-      TYPE_EMOJI.clinico_professionale = '💼';
-    }
-
-    if (typeof buildQuickActions === 'function') {
-      buildQuickActions = function(item, compact) {
-        const s = item.status;
-        const id = item.id;
-        const btns = [];
-
-        if (s !== 'attivo')     btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','attivo')">🌱 Attiva</button>`);
-        if (s !== 'non_adesso') btns.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','non_adesso')">⏸ Non adesso</button>`);
-        if (s !== 'maturato')   btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','maturato')">✨ Segna maturato</button>`);
-        if (s !== 'archiviato') btns.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','archiviato')">📦 Archivia</button>`);
-
-        if (!compact) {
-          btns.push(`<button class="btn btn-sm btn-secondary" onclick="openEdit('${id}')">✏️ Modifica</button>`);
-          btns.push(`<button class="btn btn-sm btn-danger" onclick="confirmDelete('${id}')">🗑 Elimina</button>`);
-        }
-
-        return btns.join('');
-      };
-    }
-
     document.querySelectorAll('[data-home-status]').forEach(card => {
       card.addEventListener('click', () => {
         const status = card.dataset.homeStatus || 'all';
@@ -416,10 +308,6 @@
         navigate('lista');
       });
     });
-
-    if (state.currentScreen === 'home') renderHome();
-    if (state.currentScreen === 'lista') renderLista();
-    if (state.currentScreen === 'trend') renderTrend();
   });
 </script>
 </body>
