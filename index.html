@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Diario personale di idee, cose da vedere, leggere e fare." />
+  <meta name="theme-color" content="#6b7c6e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Spunti" />
+  <title>Spunti</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+</head>
+<body>
+
+<!-- ==================== HOME ==================== -->
+<section id="screen-home" class="screen">
+
+  <div class="home-hero">
+    <h1>Spunti</h1>
+    <p class="motto">Cattura. Incuba. Distilla.</p>
+  </div>
+
+  <div class="home-cta">
+    <button class="btn btn-primary btn-full" id="btn-new-home">
+      + Nuovo spunto
+    </button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-total">0</div>
+      <div class="stat-label">Totale</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-inbox">0</div>
+      <div class="stat-label">Inbox</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-attivo">0</div>
+      <div class="stat-label">Attivi</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-non_adesso">0</div>
+      <div class="stat-label">In pausa</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-maturato">0</div>
+      <div class="stat-label">Maturati</div>
+    </div>
+  </div>
+
+  <p class="section-title">Spunti attivi</p>
+  <div class="container" id="home-actives"></div>
+
+</section>
+
+<!-- ==================== LISTA ==================== -->
+<section id="screen-lista" class="screen">
+
+  <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
+    <h2>Tutti gli spunti</h2>
+    <button class="btn btn-primary btn-sm" id="btn-new-lista">+ Nuovo</button>
+  </div>
+
+  <div class="filters-bar">
+    <input
+      type="search"
+      id="lista-search"
+      class="search-input"
+      placeholder="Cerca per titolo, tag, note…"
+      autocomplete="off"
+    />
+
+    <div class="filter-chips">
+      <button class="chip active" data-filter-status="all">Tutti</button>
+      <button class="chip" data-filter-status="inbox">📥 Inbox</button>
+      <button class="chip" data-filter-status="attivo">🌱 Attivi</button>
+      <button class="chip" data-filter-status="non_adesso">⏸ Pausa</button>
+      <button class="chip" data-filter-status="maturato">✨ Maturati</button>
+      <button class="chip" data-filter-status="archiviato">📦 Archivio</button>
+    </div>
+
+    <div class="filter-chips">
+      <button class="chip active" data-filter-type="all">Tutti</button>
+      <button class="chip" data-filter-type="vedere">🎬 Vedere</button>
+      <button class="chip" data-filter-type="leggere">📚 Leggere</button>
+      <button class="chip" data-filter-type="fare">🛠 Fare</button>
+      <button class="chip" data-filter-type="studiare">🔬 Studiare</button>
+      <button class="chip" data-filter-type="creare">🎨 Creare</button>
+      <button class="chip" data-filter-type="comprare_provare">🛒 Comprare</button>
+      <button class="chip" data-filter-type="rilassamento">☕ Relax</button>
+      <button class="chip" data-filter-type="vita_personale">🌿 Personale</button>
+      <button class="chip" data-filter-type="clinico_professionale">🩺 Clinico</button>
+      <button class="chip" data-filter-type="altro">💡 Altro</button>
+    </div>
+  </div>
+
+  <div class="container" id="lista-items"></div>
+
+</section>
+
+<!-- ==================== FORM ==================== -->
+<section id="screen-form" class="screen">
+
+  <div class="page-header">
+    <h2 id="form-title">Nuovo spunto</h2>
+  </div>
+
+  <div class="form-screen">
+
+    <div class="form-group">
+      <label class="form-label" for="f-title">Titolo <span class="required">*</span></label>
+      <input
+        id="f-title"
+        type="text"
+        class="form-control"
+        placeholder="Di cosa si tratta?"
+        autocomplete="off"
+      />
+      <p class="error-msg" id="f-title-error"></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tipo</label>
+      <div class="radio-group">
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-vedere" value="vedere" /><label for="f-type-vedere">🎬 Vedere</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-leggere" value="leggere" /><label for="f-type-leggere">📚 Leggere</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-fare" value="fare" /><label for="f-type-fare">🛠 Fare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-studiare" value="studiare" /><label for="f-type-studiare">🔬 Studiare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-creare" value="creare" /><label for="f-type-creare">🎨 Creare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare_provare" value="comprare_provare" /><label for="f-type-comprare_provare">🛒 Comprare/Provare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-clinico_professionale" value="clinico_professionale" /><label for="f-type-clinico_professionale">🩺 Clinico/Prof.</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-vita_personale" value="vita_personale" /><label for="f-type-vita_personale">🌿 Vita personale</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-rilassamento" value="rilassamento" /><label for="f-type-rilassamento">☕ Rilassamento</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-altro" value="altro" checked /><label for="f-type-altro">💡 Altro</label></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Stato</label>
+      <div class="radio-group">
+        <div class="radio-option"><input type="radio" name="f-status" id="f-status-inbox" value="inbox" checked /><label for="f-status-inbox">📥 Inbox</label></div>
+        <div class="radio-option"><input type="radio" name="f-status" id="f-status-attivo" value="attivo" /><label for="f-status-attivo">🌱 Attivo</label></div>
+        <div class="radio-option"><input type="radio" name="f-status" id="f-status-non_adesso" value="non_adesso" /><label for="f-status-non_adesso">⏸ Non adesso</label></div>
+        <div class="radio-option"><input type="radio" name="f-status" id="f-status-maturato" value="maturato" /><label for="f-status-maturato">✨ Maturato</label></div>
+        <div class="radio-option"><input type="radio" name="f-status" id="f-status-archiviato" value="archiviato" /><label for="f-status-archiviato">📦 Archiviato</label></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Energia richiesta</label>
+      <div class="radio-group">
+        <div class="radio-option"><input type="radio" name="f-energy" id="f-energy-bassa" value="bassa" /><label for="f-energy-bassa">🔵 Bassa</label></div>
+        <div class="radio-option"><input type="radio" name="f-energy" id="f-energy-media" value="media" checked /><label for="f-energy-media">🟡 Media</label></div>
+        <div class="radio-option"><input type="radio" name="f-energy" id="f-energy-alta" value="alta" /><label for="f-energy-alta">🔴 Alta</label></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-why">Perché mi interessa</label>
+      <textarea id="f-why" class="form-control" rows="3" placeholder="Cosa ti ha spinto ad aggiungerlo?"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-nextAction">Prossima azione minima</label>
+      <input id="f-nextAction" type="text" class="form-control" placeholder="Es: Trovare il libro in biblioteca" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-note">Note</label>
+      <textarea id="f-note" class="form-control" rows="3" placeholder="Appunti, contesto, dettagli…"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-link">Link</label>
+      <input id="f-link" type="url" class="form-control" placeholder="https://…" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-tags">Tag</label>
+      <input id="f-tags" type="text" class="form-control" placeholder="es: cinema, lavoro, salute (separati da virgole)" />
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary flex-1" id="btn-form-save">Salva</button>
+      <button class="btn btn-secondary" id="btn-form-cancel">Annulla</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== TREND ==================== -->
+<section id="screen-trend" class="screen">
+
+  <div class="page-header">
+    <h2>Trend</h2>
+  </div>
+
+  <div class="container">
+
+    <div class="trend-section">
+      <p id="trend-recent" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;"></p>
+    </div>
+
+    <div class="trend-section">
+      <h3>Per stato</h3>
+      <div id="trend-status"></div>
+    </div>
+
+    <div class="trend-section">
+      <h3>Per tipo</h3>
+      <div id="trend-type"></div>
+    </div>
+
+    <div class="trend-section">
+      <h3>Energia richiesta</h3>
+      <div id="trend-energy"></div>
+    </div>
+
+    <div class="trend-section">
+      <h3>Tag più frequenti</h3>
+      <div id="trend-tags"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== EXPORT ==================== -->
+<section id="screen-export" class="screen">
+
+  <div class="page-header">
+    <h2>Export &amp; Backup</h2>
+  </div>
+
+  <div class="container">
+
+    <div class="export-section">
+      <h3>Analisi AI</h3>
+      <div class="export-card">
+        <h4>📄 Export Markdown</h4>
+        <p>Produce un testo con tutti i tuoi spunti e un prompt pronto per analisi AI (ChatGPT, Claude, Gemini…).</p>
+        <div class="export-btns">
+          <button class="btn btn-primary btn-sm" id="btn-export-md">Scarica .md</button>
+          <button class="btn btn-secondary btn-sm" id="btn-copy-md">Copia negli appunti</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="export-section">
+      <h3>Backup dati</h3>
+      <div class="export-card">
+        <h4>💾 Export JSON</h4>
+        <p>Esporta tutti i dati in formato JSON. Usa questo file per il backup completo o per trasferire i dati su un altro dispositivo.</p>
+        <div class="export-btns">
+          <button class="btn btn-primary btn-sm" id="btn-export-json">Scarica JSON</button>
+        </div>
+      </div>
+      <div class="export-card">
+        <h4>📊 Export CSV</h4>
+        <p>Esporta in formato foglio di calcolo, compatibile con Excel, Google Sheets e Numbers.</p>
+        <div class="export-btns">
+          <button class="btn btn-secondary btn-sm" id="btn-export-csv">Scarica CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="export-section">
+      <h3>Importa</h3>
+      <div class="export-card">
+        <h4>📂 Importa JSON</h4>
+        <p>Importa un backup JSON precedentemente esportato. Gli spunti già presenti non vengono duplicati.</p>
+        <div class="export-btns">
+          <button class="btn btn-secondary btn-sm" id="btn-import-json">Scegli file…</button>
+        </div>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== BOTTOM NAV ==================== -->
+<nav class="bottom-nav" role="navigation" aria-label="Navigazione principale">
+  <button class="nav-btn active" data-screen="home" aria-label="Home">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="nav-btn" data-screen="lista" aria-label="Spunti">
+    <span class="nav-icon">📋</span>
+    <span>Spunti</span>
+  </button>
+  <button class="nav-btn" data-screen="trend" aria-label="Trend">
+    <span class="nav-icon">📈</span>
+    <span>Trend</span>
+  </button>
+  <button class="nav-btn" data-screen="export" aria-label="Export">
+    <span class="nav-icon">💾</span>
+    <span>Export</span>
+  </button>
+</nav>
+
+<!-- ==================== MODAL CONFIRM ==================== -->
+<div id="modal-confirm" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-heading">
+  <div class="modal-box">
+    <h3 id="modal-confirm-heading">Eliminare questo spunto?</h3>
+    <p>Stai per eliminare "<strong id="confirm-title"></strong>". L'azione non è reversibile.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-delete">Annulla</button>
+      <button class="btn btn-danger btn-sm" id="btn-confirm-delete">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="./app.js"></script>
+</body>
+</html>
