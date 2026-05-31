@@ -51,6 +51,31 @@ I dati restano sul tuo dispositivo (localStorage). Nessun backend, nessun accoun
 
 ---
 
+## Installazione come PWA
+
+Puoi installare Spunti sul tuo dispositivo per usarla come app nativa, senza aprire il browser.
+
+**Android / Chrome**
+1. Apri l'URL dell'app in Chrome.
+2. Tocca il menu (⋮) in alto a destra.
+3. Seleziona **"Aggiungi a schermata Home"** oppure **"Installa app"**.
+4. Conferma: l'icona comparirà nella schermata Home.
+
+**iPhone / iPad (Safari)**
+1. Apri l'URL in Safari.
+2. Tocca l'icona **Condividi** (il quadrato con la freccia).
+3. Scorri e scegli **"Aggiungi alla schermata Home"**.
+4. Dai un nome e tocca **Aggiungi**.
+
+**Desktop — Chrome / Edge**
+1. Apri l'URL nel browser.
+2. Cerca l'icona di installazione (schermo con freccia) nella barra degli indirizzi, oppure vai su **Menu → Installa Spunti**.
+3. Conferma l'installazione: l'app si apre in una finestra dedicata.
+
+> **I dati restano nel tuo browser/dispositivo** tramite `localStorage`. Nessun dato viene inviato a server esterni. Per sicurezza, esporta periodicamente un backup JSON dalla scheda **Export**.
+
+---
+
 ## Come pubblicarla su GitHub Pages
 
 1. Crea un repository GitHub (es. `spunti-pwa`)
