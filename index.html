@@ -85,9 +85,9 @@
       <div class="stat-num" id="stat-attivo">0</div>
       <div class="stat-label">Attivi</div>
     </button>
-    <button class="stat-card stat-link" type="button" data-home-status="non_adesso" aria-label="Mostra gli spunti in pausa">
+    <button class="stat-card stat-link" type="button" data-home-status="non_adesso" aria-label="Mostra gli spunti non adesso">
       <div class="stat-num" id="stat-non_adesso">0</div>
-      <div class="stat-label">In pausa</div>
+      <div class="stat-label">Non adesso</div>
     </button>
     <button class="stat-card stat-link" type="button" data-home-status="maturato" aria-label="Mostra gli spunti maturati">
       <div class="stat-num" id="stat-maturato">0</div>
@@ -121,7 +121,7 @@
       <button class="chip active" data-filter-status="all">Tutti</button>
       <button class="chip" data-filter-status="inbox">📥 Inbox</button>
       <button class="chip" data-filter-status="attivo">🌱 Attivi</button>
-      <button class="chip" data-filter-status="non_adesso">⏸ Pausa</button>
+      <button class="chip" data-filter-status="non_adesso">⏸ Non adesso</button>
       <button class="chip" data-filter-status="maturato">✨ Maturati</button>
       <button class="chip" data-filter-status="archiviato">📦 Archivio</button>
     </div>
@@ -133,10 +133,10 @@
       <button class="chip" data-filter-type="fare">🛠 Fare</button>
       <button class="chip" data-filter-type="studiare">🔬 Studiare</button>
       <button class="chip" data-filter-type="creare">🎨 Creare</button>
-      <button class="chip" data-filter-type="comprare_provare">🛒 Comprare</button>
+      <button class="chip" data-filter-type="comprare_provare">🛒 Provare/Comprare</button>
       <button class="chip" data-filter-type="rilassamento">☕ Relax</button>
       <button class="chip" data-filter-type="vita_personale">🌿 Personale</button>
-      <button class="chip" data-filter-type="clinico_professionale">🩺 Clinico</button>
+      <button class="chip" data-filter-type="clinico_professionale">💼 Professionale</button>
       <button class="chip" data-filter-type="altro">💡 Altro</button>
     </div>
   </div>
@@ -174,10 +174,10 @@
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-fare" value="fare" /><label for="f-type-fare">🛠 Fare</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-studiare" value="studiare" /><label for="f-type-studiare">🔬 Studiare</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-creare" value="creare" /><label for="f-type-creare">🎨 Creare</label></div>
-        <div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare_provare" value="comprare_provare" /><label for="f-type-comprare_provare">🛒 Comprare/Provare</label></div>
-        <div class="radio-option"><input type="radio" name="f-type" id="f-type-clinico_professionale" value="clinico_professionale" /><label for="f-type-clinico_professionale">🩺 Clinico/Prof.</label></div>
-        <div class="radio-option"><input type="radio" name="f-type" id="f-type-vita_personale" value="vita_personale" /><label for="f-type-vita_personale">🌿 Vita personale</label></div>
-        <div class="radio-option"><input type="radio" name="f-type" id="f-type-rilassamento" value="rilassamento" /><label for="f-type-rilassamento">☕ Rilassamento</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare_provare" value="comprare_provare" /><label for="f-type-comprare_provare">🛒 Provare/Comprare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-clinico_professionale" value="clinico_professionale" /><label for="f-type-clinico_professionale">💼 Professionale</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-vita_personale" value="vita_personale" /><label for="f-type-vita_personale">🌿 Personale</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-rilassamento" value="rilassamento" /><label for="f-type-rilassamento">☕ Relax</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-altro" value="altro" checked /><label for="f-type-altro">💡 Altro</label></div>
       </div>
     </div>
@@ -363,6 +363,37 @@
 <script src="./app.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    if (typeof TYPE_LABELS !== 'undefined') {
+      TYPE_LABELS.comprare_provare = 'Provare/Comprare';
+      TYPE_LABELS.clinico_professionale = 'Professionale';
+      TYPE_LABELS.vita_personale = 'Personale';
+      TYPE_LABELS.rilassamento = 'Relax';
+    }
+
+    if (typeof TYPE_EMOJI !== 'undefined') {
+      TYPE_EMOJI.clinico_professionale = '💼';
+    }
+
+    if (typeof buildQuickActions === 'function') {
+      buildQuickActions = function(item, compact) {
+        const s = item.status;
+        const id = item.id;
+        const btns = [];
+
+        if (s !== 'attivo')     btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','attivo')">🌱 Attiva</button>`);
+        if (s !== 'non_adesso') btns.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','non_adesso')">⏸ Non adesso</button>`);
+        if (s !== 'maturato')   btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','maturato')">✨ Segna maturato</button>`);
+        if (s !== 'archiviato') btns.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','archiviato')">📦 Archivia</button>`);
+
+        if (!compact) {
+          btns.push(`<button class="btn btn-sm btn-secondary" onclick="openEdit('${id}')">✏️ Modifica</button>`);
+          btns.push(`<button class="btn btn-sm btn-danger" onclick="confirmDelete('${id}')">🗑 Elimina</button>`);
+        }
+
+        return btns.join('');
+      };
+    }
+
     document.querySelectorAll('[data-home-status]').forEach(card => {
       card.addEventListener('click', () => {
         const status = card.dataset.homeStatus || 'all';
@@ -385,6 +416,10 @@
         navigate('lista');
       });
     });
+
+    if (state.currentScreen === 'home') renderHome();
+    if (state.currentScreen === 'lista') renderLista();
+    if (state.currentScreen === 'trend') renderTrend();
   });
 </script>
 </body>
