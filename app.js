@@ -230,11 +230,14 @@ function renderHome() {
   const container = document.getElementById('home-actives');
 
   if (actives.length === 0) {
+    const msg = items.length === 0
+      ? 'Nessuno spunto ancora. Cattura il primo quando qualcosa ti interessa.'
+      : 'Nessuno spunto attivo. Attivane uno dalla lista quando vuoi concentrarti.';
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">🌱</div>
-        <h3>Nessuno spunto attivo</h3>
-        <p>Aggiungi il tuo primo spunto o attiva uno dalla lista.</p>
+        <h3>${items.length === 0 ? 'Tutto da iniziare' : 'Nessuno spunto attivo'}</h3>
+        <p>${msg}</p>
       </div>`;
     return;
   }
@@ -264,12 +267,18 @@ function renderLista() {
   const container = document.getElementById('lista-items');
 
   if (items.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <h3>Nessun risultato</h3>
-        <p>Prova a modificare i filtri o cerca qualcosa di diverso.</p>
-      </div>`;
+    const noneAtAll = state.items.length === 0;
+    container.innerHTML = noneAtAll
+      ? `<div class="empty-state">
+          <div class="empty-icon">🌱</div>
+          <h3>Tutto da iniziare</h3>
+          <p>Nessuno spunto ancora. Cattura il primo quando qualcosa ti interessa.</p>
+        </div>`
+      : `<div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <h3>Nessun risultato</h3>
+          <p>Prova a modificare i filtri o cerca qualcosa di diverso.</p>
+        </div>`;
     return;
   }
 
@@ -675,18 +684,6 @@ function downloadFile(filename, content, type) {
   }, 100);
 }
 
-// ---- SEED DATA ----
-
-function seedIfEmpty() {
-  if (state.items.length > 0) return;
-  const seeds = [
-    { title: 'Guardare "Past Lives"', type: 'vedere', status: 'inbox', energy: 'bassa', why: 'Film coreano molto lodato sul tema delle connessioni perdute', tags: 'film,cinema' },
-    { title: 'Leggere "Pensieri lenti e veloci" di Kahneman', type: 'leggere', status: 'attivo', energy: 'alta', why: 'Capire meglio i bias cognitivi per il lavoro clinico', nextAction: 'Trovare il libro in biblioteca', tags: 'psicologia,lettura' },
-    { title: 'Provare meditazione guidata mattutina', type: 'rilassamento', status: 'non_adesso', energy: 'bassa', why: 'Migliorare la qualità del sonno e ridurre lo stress', tags: 'benessere,routine' }
-  ];
-  seeds.forEach(s => createSpunto(s));
-}
-
 // ---- EVENT SETUP ----
 
 function setupEvents() {
@@ -776,7 +773,6 @@ function registerSW() {
 // ---- INIT ----
 
 document.addEventListener('DOMContentLoaded', () => {
-  seedIfEmpty();
   setupEvents();
   registerSW();
   navigate('home');
