@@ -28,6 +28,31 @@
       box-shadow: 0 4px 12px rgba(74, 90, 77, 0.22), inset 0 0 0 1px rgba(107, 124, 110, 0.18);
       transform: translateY(-1px);
     }
+
+    .stat-card.stat-link {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease, background-color 0.14s ease;
+    }
+
+    .stat-card.stat-link:focus-visible {
+      outline: 3px solid var(--accent-light);
+      outline-offset: 2px;
+    }
+
+    .stat-card.stat-link:active {
+      transform: scale(0.98);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card.stat-link:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+    }
   </style>
   <link rel="manifest" href="./manifest.webmanifest" />
 </head>
@@ -48,26 +73,26 @@
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card">
+    <button class="stat-card stat-link" type="button" data-home-status="all" aria-label="Mostra tutti gli spunti">
       <div class="stat-num" id="stat-total">0</div>
       <div class="stat-label">Totale</div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card stat-link" type="button" data-home-status="inbox" aria-label="Mostra gli spunti in Inbox">
       <div class="stat-num" id="stat-inbox">0</div>
       <div class="stat-label">Inbox</div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card stat-link" type="button" data-home-status="attivo" aria-label="Mostra gli spunti attivi">
       <div class="stat-num" id="stat-attivo">0</div>
       <div class="stat-label">Attivi</div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card stat-link" type="button" data-home-status="non_adesso" aria-label="Mostra gli spunti in pausa">
       <div class="stat-num" id="stat-non_adesso">0</div>
       <div class="stat-label">In pausa</div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card stat-link" type="button" data-home-status="maturato" aria-label="Mostra gli spunti maturati">
       <div class="stat-num" id="stat-maturato">0</div>
       <div class="stat-label">Maturati</div>
-    </div>
+    </button>
   </div>
 
   <p class="section-title">Spunti attivi</p>
@@ -336,5 +361,31 @@
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="./app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-home-status]').forEach(card => {
+      card.addEventListener('click', () => {
+        const status = card.dataset.homeStatus || 'all';
+        const searchInput = document.getElementById('lista-search');
+
+        state.filters.search = '';
+        state.filters.status = status;
+        state.filters.type = 'all';
+
+        if (searchInput) searchInput.value = '';
+
+        document.querySelectorAll('.chip[data-filter-status]').forEach(chip => {
+          chip.classList.toggle('active', chip.dataset.filterStatus === status);
+        });
+
+        document.querySelectorAll('.chip[data-filter-type]').forEach(chip => {
+          chip.classList.toggle('active', chip.dataset.filterType === 'all');
+        });
+
+        navigate('lista');
+      });
+    });
+  });
+</script>
 </body>
 </html>
