@@ -29,10 +29,10 @@ const TYPE_LABELS = {
   fare:                'Fare',
   studiare:            'Studiare',
   creare:              'Creare',
-  comprare_provare:    'Comprare/Provare',
-  clinico_professionale: 'Clinico/Professionale',
-  vita_personale:      'Vita personale',
-  rilassamento:        'Rilassamento',
+  comprare_provare:    'Provare/Comprare',
+  clinico_professionale: 'Professionale',
+  vita_personale:      'Personale',
+  rilassamento:        'Relax',
   altro:               'Altro'
 };
 
@@ -43,7 +43,7 @@ const TYPE_EMOJI = {
   studiare:            '🔬',
   creare:              '🎨',
   comprare_provare:    '🛒',
-  clinico_professionale: '🩺',
+  clinico_professionale: '💼',
   vita_personale:      '🌿',
   rilassamento:        '☕',
   altro:               '💡'
@@ -325,7 +325,7 @@ function buildQuickActions(item, compact) {
 
   if (s !== 'attivo')     btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','attivo')">🌱 Attiva</button>`);
   if (s !== 'non_adesso') btns.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','non_adesso')">⏸ Non adesso</button>`);
-  if (s !== 'maturato')   btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','maturato')">✨ Matura</button>`);
+  if (s !== 'maturato')   btns.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','maturato')">✨ Segna maturato</button>`);
   if (s !== 'archiviato') btns.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','archiviato')">📦 Archivia</button>`);
 
   if (!compact) {
