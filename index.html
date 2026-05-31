@@ -12,6 +12,23 @@
   <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="stylesheet" href="./styles.css" />
+  <style>
+    .nav-btn .nav-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 28px;
+      border-radius: 999px;
+      transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .nav-btn.active .nav-icon {
+      background: var(--accent-light);
+      box-shadow: 0 4px 12px rgba(74, 90, 77, 0.22), inset 0 0 0 1px rgba(107, 124, 110, 0.18);
+      transform: translateY(-1px);
+    }
+  </style>
   <link rel="manifest" href="./manifest.webmanifest" />
 </head>
 <body>
