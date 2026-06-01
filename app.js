@@ -688,11 +688,17 @@ function mergeDevelopment(saved) {
 function analysisHasContent(item) {
   if (!item || !item.development) return false;
   const d = item.development;
-  return !!(
-    (d.core && d.core.oneSentence) ||
-    d.rawDump ||
-    (d.decision && d.decision.currentDecision)
-  );
+  if (d.updatedAt) return true;
+  if (d.rawDump) return true;
+  const anyObj = obj => obj && Object.values(obj).some(v => v);
+  if (anyObj(d.core)) return true;
+  if (anyObj(d.chunks)) return true;
+  if (anyObj(d.layers)) return true;
+  if (d.scores && Object.values(d.scores).some(v => Number(v) > 0)) return true;
+  if (anyObj(d.minimumVersion)) return true;
+  const dec = d.decision || {};
+  if (dec.currentDecision || dec.reason || dec.nextStep20Min || dec.reviewDate) return true;
+  return false;
 }
 
 window.openDevelop = function(id) {
