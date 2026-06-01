@@ -9,9 +9,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Spunti" />
   <title>Spunti</title>
-  <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+  <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+
   <style>
     .nav-btn .nav-icon {
       display: inline-flex;
@@ -54,11 +57,12 @@
       box-shadow: var(--shadow-md);
     }
   </style>
-  <link rel="manifest" href="./manifest.webmanifest" />
 </head>
+
 <body>
 
 <section id="screen-home" class="screen">
+
   <div class="home-hero">
     <h1>Spunti</h1>
     <p class="motto">Cattura. Incuba. Distilla.</p>
@@ -93,16 +97,24 @@
 
   <p class="section-title">Spunti attivi</p>
   <div class="container" id="home-actives"></div>
+
 </section>
 
 <section id="screen-lista" class="screen">
+
   <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
     <h2>Tutti gli spunti</h2>
     <button class="btn btn-primary btn-sm" id="btn-new-lista">+ Nuovo</button>
   </div>
 
   <div class="filters-bar">
-    <input type="search" id="lista-search" class="search-input" placeholder="Cerca per titolo, tag, note…" autocomplete="off" />
+    <input
+      type="search"
+      id="lista-search"
+      class="search-input"
+      placeholder="Cerca per titolo, tag, note…"
+      autocomplete="off"
+    />
 
     <div class="filter-chips">
       <button class="chip active" data-filter-status="all">Tutti</button>
@@ -120,7 +132,9 @@
       <button class="chip" data-filter-type="fare">🛠 Fare</button>
       <button class="chip" data-filter-type="studiare">🔬 Studiare</button>
       <button class="chip" data-filter-type="creare">🎨 Creare</button>
-      <button class="chip" data-filter-type="comprare_provare">🛒 Provare/Comprare</button>
+      <button class="chip" data-filter-type="idea">💭 Idea</button>
+      <button class="chip" data-filter-type="provare">🧪 Provare</button>
+      <button class="chip" data-filter-type="comprare">🛒 Comprare</button>
       <button class="chip" data-filter-type="rilassamento">☕ Relax</button>
       <button class="chip" data-filter-type="vita_personale">🌿 Personale</button>
       <button class="chip" data-filter-type="clinico_professionale">💼 Professionale</button>
@@ -129,14 +143,17 @@
   </div>
 
   <div class="container" id="lista-items"></div>
+
 </section>
 
 <section id="screen-form" class="screen">
+
   <div class="page-header">
     <h2 id="form-title">Nuovo spunto</h2>
   </div>
 
   <div class="form-screen">
+
     <div class="form-group">
       <label class="form-label" for="f-title">Titolo <span class="required">*</span></label>
       <input id="f-title" type="text" class="form-control" placeholder="Di cosa si tratta?" autocomplete="off" />
@@ -151,7 +168,9 @@
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-fare" value="fare" /><label for="f-type-fare">🛠 Fare</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-studiare" value="studiare" /><label for="f-type-studiare">🔬 Studiare</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-creare" value="creare" /><label for="f-type-creare">🎨 Creare</label></div>
-        <div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare_provare" value="comprare_provare" /><label for="f-type-comprare_provare">🛒 Provare/Comprare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-idea" value="idea" /><label for="f-type-idea">💭 Idea</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-provare" value="provare" /><label for="f-type-provare">🧪 Provare</label></div>
+        <div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare" value="comprare" /><label for="f-type-comprare">🛒 Comprare</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-clinico_professionale" value="clinico_professionale" /><label for="f-type-clinico_professionale">💼 Professionale</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-vita_personale" value="vita_personale" /><label for="f-type-vita_personale">🌿 Personale</label></div>
         <div class="radio-option"><input type="radio" name="f-type" id="f-type-rilassamento" value="rilassamento" /><label for="f-type-rilassamento">☕ Relax</label></div>
@@ -185,8 +204,8 @@
     </div>
 
     <div class="form-group">
-      <label class="form-label" for="f-nextAction">Prossima azione minima</label>
-      <input id="f-nextAction" type="text" class="form-control" placeholder="Es: Trovare il libro in biblioteca" />
+      <label class="form-label" for="f-nextAction">Prossima azione, domanda o sviluppo possibile</label>
+      <input id="f-nextAction" type="text" class="form-control" placeholder="Es: primo passo, domanda aperta o possibile sviluppo" />
     </div>
 
     <div class="form-group">
@@ -208,28 +227,55 @@
       <button class="btn btn-primary flex-1" id="btn-form-save">Salva</button>
       <button class="btn btn-secondary" id="btn-form-cancel">Annulla</button>
     </div>
+
   </div>
 </section>
 
 <section id="screen-trend" class="screen">
-  <div class="page-header"><h2>Trend</h2></div>
+  <div class="page-header">
+    <h2>Trend</h2>
+  </div>
+
   <div class="container">
-    <div class="trend-section"><p id="trend-recent" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;"></p></div>
-    <div class="trend-section"><h3>Per stato</h3><div id="trend-status"></div></div>
-    <div class="trend-section"><h3>Per tipo</h3><div id="trend-type"></div></div>
-    <div class="trend-section"><h3>Energia richiesta</h3><div id="trend-energy"></div></div>
-    <div class="trend-section"><h3>Tag più frequenti</h3><div id="trend-tags"></div></div>
+    <div class="trend-section">
+      <p id="trend-recent" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;"></p>
+    </div>
+
+    <div class="trend-section">
+      <h3>Per stato</h3>
+      <div id="trend-status"></div>
+    </div>
+
+    <div class="trend-section">
+      <h3>Per tipo</h3>
+      <div id="trend-type"></div>
+    </div>
+
+    <div class="trend-section">
+      <h3>Energia richiesta</h3>
+      <div id="trend-energy"></div>
+    </div>
+
+    <div class="trend-section">
+      <h3>Tag più frequenti</h3>
+      <div id="trend-tags"></div>
+    </div>
   </div>
 </section>
 
 <section id="screen-export" class="screen">
-  <div class="page-header"><h2>Export &amp; Backup</h2></div>
+  <div class="page-header">
+    <h2>Export &amp; Backup</h2>
+  </div>
+
   <div class="container">
     <div class="export-section">
       <h3>Analisi AI</h3>
+
       <div class="export-card">
         <h4>📄 Export Markdown</h4>
         <p>Produce un testo con tutti i tuoi spunti e un prompt pronto per analisi AI (ChatGPT, Claude, Gemini…).</p>
+
         <div class="export-btns">
           <button class="btn btn-primary btn-sm" id="btn-export-md">Scarica .md</button>
           <button class="btn btn-secondary btn-sm" id="btn-copy-md">Copia negli appunti</button>
@@ -239,24 +285,37 @@
 
     <div class="export-section">
       <h3>Backup dati</h3>
+
       <div class="export-card">
         <h4>💾 Export JSON</h4>
         <p>Esporta tutti i dati in formato JSON. Usa questo file per il backup completo o per trasferire i dati su un altro dispositivo.</p>
-        <div class="export-btns"><button class="btn btn-primary btn-sm" id="btn-export-json">Scarica JSON</button></div>
+
+        <div class="export-btns">
+          <button class="btn btn-primary btn-sm" id="btn-export-json">Scarica JSON</button>
+        </div>
       </div>
+
       <div class="export-card">
         <h4>📊 Export CSV</h4>
         <p>Esporta in formato foglio di calcolo, compatibile con Excel, Google Sheets e Numbers.</p>
-        <div class="export-btns"><button class="btn btn-secondary btn-sm" id="btn-export-csv">Scarica CSV</button></div>
+
+        <div class="export-btns">
+          <button class="btn btn-secondary btn-sm" id="btn-export-csv">Scarica CSV</button>
+        </div>
       </div>
     </div>
 
     <div class="export-section">
       <h3>Importa</h3>
+
       <div class="export-card">
         <h4>📂 Importa JSON</h4>
         <p>Importa un backup JSON precedentemente esportato. Gli spunti già presenti non vengono duplicati.</p>
-        <div class="export-btns"><button class="btn btn-secondary btn-sm" id="btn-import-json">Scegli file…</button></div>
+
+        <div class="export-btns">
+          <button class="btn btn-secondary btn-sm" id="btn-import-json">Scegli file…</button>
+        </div>
+
         <input type="file" id="import-file-input" accept=".json" style="display:none" />
       </div>
     </div>
@@ -264,16 +323,32 @@
 </section>
 
 <nav class="bottom-nav" role="navigation" aria-label="Navigazione principale">
-  <button class="nav-btn active" data-screen="home" aria-label="Home"><span class="nav-icon">🏠</span><span>Home</span></button>
-  <button class="nav-btn" data-screen="lista" aria-label="Spunti"><span class="nav-icon">📋</span><span>Spunti</span></button>
-  <button class="nav-btn" data-screen="trend" aria-label="Trend"><span class="nav-icon">📈</span><span>Trend</span></button>
-  <button class="nav-btn" data-screen="export" aria-label="Export"><span class="nav-icon">💾</span><span>Export</span></button>
+  <button class="nav-btn active" data-screen="home" aria-label="Home">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-btn" data-screen="lista" aria-label="Spunti">
+    <span class="nav-icon">📋</span>
+    <span>Spunti</span>
+  </button>
+
+  <button class="nav-btn" data-screen="trend" aria-label="Trend">
+    <span class="nav-icon">📈</span>
+    <span>Trend</span>
+  </button>
+
+  <button class="nav-btn" data-screen="export" aria-label="Export">
+    <span class="nav-icon">💾</span>
+    <span>Export</span>
+  </button>
 </nav>
 
 <div id="modal-confirm" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-heading">
   <div class="modal-box">
     <h3 id="modal-confirm-heading">Eliminare questo spunto?</h3>
     <p>Stai per eliminare "<strong id="confirm-title"></strong>". L'azione non è reversibile.</p>
+
     <div class="modal-actions">
       <button class="btn btn-ghost btn-sm" id="btn-cancel-delete">Annulla</button>
       <button class="btn btn-danger btn-sm" id="btn-confirm-delete">Elimina</button>
@@ -284,31 +359,6 @@
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="./app.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-home-status]').forEach(card => {
-      card.addEventListener('click', () => {
-        const status = card.dataset.homeStatus || 'all';
-        const searchInput = document.getElementById('lista-search');
 
-        state.filters.search = '';
-        state.filters.status = status;
-        state.filters.type = 'all';
-
-        if (searchInput) searchInput.value = '';
-
-        document.querySelectorAll('.chip[data-filter-status]').forEach(chip => {
-          chip.classList.toggle('active', chip.dataset.filterStatus === status);
-        });
-
-        document.querySelectorAll('.chip[data-filter-type]').forEach(chip => {
-          chip.classList.toggle('active', chip.dataset.filterType === 'all');
-        });
-
-        navigate('lista');
-      });
-    });
-  });
-</script>
 </body>
 </html>
