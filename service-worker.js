@@ -1,4 +1,4 @@
-const CACHE_NAME = 'spunti-v14';
+const CACHE_NAME = 'spunti-v15';
 
 const ASSETS = [
   './index.html',
