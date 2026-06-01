@@ -322,6 +322,254 @@
   </div>
 </section>
 
+<!-- ==================== ANALYSIS ==================== -->
+<section id="screen-analysis" class="screen">
+
+  <div class="page-header analysis-page-header">
+    <div class="analysis-header-top">
+      <button class="btn btn-ghost btn-sm" id="btn-analysis-back">← Indietro</button>
+      <span id="analysis-status-badge" class="badge"></span>
+    </div>
+    <h2 id="analysis-title">Sviluppa idea</h2>
+    <div class="analysis-header-actions">
+      <button class="btn btn-primary btn-sm" id="btn-analysis-save">Salva analisi</button>
+      <button class="btn btn-ghost btn-sm" id="btn-analysis-cancel">Annulla</button>
+    </div>
+  </div>
+
+  <div class="container analysis-body">
+
+    <!-- Sintesi — sempre visibile -->
+    <div class="card analysis-summary" id="analysis-summary">
+      <div class="analysis-summary-title">📊 Sintesi</div>
+      <div class="summary-row"><span class="summary-label">Nucleo</span><span class="summary-val" id="sum-core">—</span></div>
+      <div class="summary-row"><span class="summary-label">Valore</span><span class="summary-val" id="sum-value">—</span></div>
+      <div class="summary-row"><span class="summary-label">Energia</span><span class="summary-val" id="sum-energy">—</span></div>
+      <div class="summary-row"><span class="summary-label">Fattibilità</span><span class="summary-val" id="sum-feasibility">—</span></div>
+      <div class="summary-row"><span class="summary-label">Rischio</span><span class="summary-val" id="sum-dispersion">—</span></div>
+      <div class="summary-row"><span class="summary-label">Decisione</span><span class="summary-val" id="sum-decision">—</span></div>
+      <div class="summary-row"><span class="summary-label">Prossimo passo</span><span class="summary-val" id="sum-next">—</span></div>
+      <div class="analysis-orientation" id="analysis-orientation"></div>
+    </div>
+
+    <!-- 1. Nucleo -->
+    <details class="card analysis-section" open>
+      <summary class="analysis-section-title">1. Nucleo</summary>
+      <div class="analysis-section-body">
+        <div class="form-group">
+          <label class="form-label" for="a-core-sentence">Idea in una frase</label>
+          <input id="a-core-sentence" type="text" class="form-control" placeholder="Riduci l'idea alla sua forma essenziale." />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-core-problem">Problema centrale</label>
+          <textarea id="a-core-problem" class="form-control" rows="3" placeholder="Che problema, bisogno o curiosità intercetta?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-core-why">Perché mi interessa</label>
+          <textarea id="a-core-why" class="form-control" rows="3" placeholder="Che cosa mi attrae davvero?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-core-outcome">Risultato desiderato</label>
+          <textarea id="a-core-outcome" class="form-control" rows="3" placeholder="Se funzionasse, cosa cambierebbe?"></textarea>
+        </div>
+      </div>
+    </details>
+
+    <!-- 2. Scarico grezzo -->
+    <details class="card analysis-section">
+      <summary class="analysis-section-title">2. Scarico grezzo</summary>
+      <div class="analysis-section-body">
+        <div class="form-group">
+          <label class="form-label" for="a-raw-dump">Scrivi tutto ciò che ti viene in mente</label>
+          <textarea id="a-raw-dump" class="form-control" rows="9" placeholder="Svuota la mente. Non ordinare, non correggere, non decidere."></textarea>
+        </div>
+      </div>
+    </details>
+
+    <!-- 3. Blocchi -->
+    <details class="card analysis-section">
+      <summary class="analysis-section-title">3. Organizza in blocchi</summary>
+      <div class="analysis-section-body">
+        <p class="analysis-help">Raggruppa i pensieri in contenitori. Meno elementi devi tenere in memoria, più puoi ragionare con lucidità.</p>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-attraction">Attrattiva</label>
+          <textarea id="a-chunk-attraction" class="form-control" rows="2" placeholder="Cosa mi attira di questa idea?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-usefulness">Utilità</label>
+          <textarea id="a-chunk-usefulness" class="form-control" rows="2" placeholder="A cosa servirebbe concretamente?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-feasibility">Fattibilità</label>
+          <textarea id="a-chunk-feasibility" class="form-control" rows="2" placeholder="Quanto è realizzabile?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-context">Contesto</label>
+          <textarea id="a-chunk-context" class="form-control" rows="2" placeholder="In quale contesto si inserisce?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-resources">Risorse</label>
+          <textarea id="a-chunk-resources" class="form-control" rows="2" placeholder="Cosa servirebbe?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-obstacles">Ostacoli</label>
+          <textarea id="a-chunk-obstacles" class="form-control" rows="2" placeholder="Cosa potrebbe bloccarmi?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-risks">Rischi</label>
+          <textarea id="a-chunk-risks" class="form-control" rows="2" placeholder="Cosa potrebbe andare storto?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-chunk-energy">Energia</label>
+          <textarea id="a-chunk-energy" class="form-control" rows="2" placeholder="Come mi sento quando ci penso?"></textarea>
+        </div>
+      </div>
+    </details>
+
+    <!-- 4. Analisi stratificata -->
+    <details class="card analysis-section">
+      <summary class="analysis-section-title">4. Analisi stratificata</summary>
+      <div class="analysis-section-body">
+        <div class="form-group">
+          <label class="form-label" for="a-layer-description">Descrizione</label>
+          <p class="analysis-help">Che cosa sto osservando? Quali sono i fatti?</p>
+          <textarea id="a-layer-description" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-layer-meaning">Significato</label>
+          <p class="analysis-help">Perché questa idea è rilevante per me?</p>
+          <textarea id="a-layer-meaning" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-layer-connections">Connessioni</label>
+          <p class="analysis-help">A quali progetti, interessi o problemi si collega?</p>
+          <textarea id="a-layer-connections" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-layer-value">Valore</label>
+          <p class="analysis-help">Che valore avrebbe se la sviluppassi?</p>
+          <textarea id="a-layer-value" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-layer-feasibility">Fattibilità</label>
+          <p class="analysis-help">Cosa servirebbe per testarla?</p>
+          <textarea id="a-layer-feasibility" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-layer-risks">Rischi e punti ciechi</label>
+          <p class="analysis-help">Dove potrei complicarla troppo, idealizzarla o disperdermi?</p>
+          <textarea id="a-layer-risks" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-layer-escape">Esplorazione o fuga</label>
+          <p class="analysis-help">Mi avvicina a una direzione importante o mi allontana da qualcosa?</p>
+          <textarea id="a-layer-escape" class="form-control" rows="3"></textarea>
+        </div>
+      </div>
+    </details>
+
+    <!-- 5. Valutazione -->
+    <details class="card analysis-section">
+      <summary class="analysis-section-title">5. Valutazione</summary>
+      <div class="analysis-section-body">
+        <div class="score-row">
+          <label class="form-label score-label" for="a-score-value">Valore</label>
+          <input type="range" id="a-score-value" class="score-slider" min="0" max="5" step="1" value="0" />
+          <span class="score-num" id="a-score-value-num">0</span>
+        </div>
+        <div class="score-row">
+          <label class="form-label score-label" for="a-score-energy">Energia</label>
+          <input type="range" id="a-score-energy" class="score-slider" min="0" max="5" step="1" value="0" />
+          <span class="score-num" id="a-score-energy-num">0</span>
+        </div>
+        <div class="score-row">
+          <label class="form-label score-label" for="a-score-feasibility">Fattibilità</label>
+          <input type="range" id="a-score-feasibility" class="score-slider" min="0" max="5" step="1" value="0" />
+          <span class="score-num" id="a-score-feasibility-num">0</span>
+        </div>
+        <div class="score-row">
+          <label class="form-label score-label" for="a-score-coherence">Coerenza</label>
+          <input type="range" id="a-score-coherence" class="score-slider" min="0" max="5" step="1" value="0" />
+          <span class="score-num" id="a-score-coherence-num">0</span>
+        </div>
+        <div class="score-row">
+          <label class="form-label score-label" for="a-score-dispersion">Rischio dispersione</label>
+          <input type="range" id="a-score-dispersion" class="score-slider" min="0" max="5" step="1" value="0" />
+          <span class="score-num" id="a-score-dispersion-num">0</span>
+        </div>
+        <div class="score-row">
+          <label class="form-label score-label" for="a-score-urgency">Urgenza</label>
+          <input type="range" id="a-score-urgency" class="score-slider" min="0" max="5" step="1" value="0" />
+          <span class="score-num" id="a-score-urgency-num">0</span>
+        </div>
+        <div class="analysis-orientation-card" id="analysis-scores-hint"></div>
+      </div>
+    </details>
+
+    <!-- 6. Versione minima -->
+    <details class="card analysis-section">
+      <summary class="analysis-section-title">6. Versione minima</summary>
+      <div class="analysis-section-body">
+        <p class="analysis-highlight">Cosa devo ignorare per poter iniziare?</p>
+        <div class="form-group">
+          <label class="form-label" for="a-min-form">Forma minima dell'idea</label>
+          <textarea id="a-min-form" class="form-control" rows="3" placeholder="Come si riduce all'essenziale?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-min-exclude">Cosa escludo per ora</label>
+          <textarea id="a-min-exclude" class="form-control" rows="2" placeholder="Cosa rimando consapevolmente?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-min-test">Primo test</label>
+          <input id="a-min-test" type="text" class="form-control" placeholder="Qual è l'esperimento più piccolo possibile?" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-min-timebox">Timebox</label>
+          <input id="a-min-timebox" type="text" class="form-control" placeholder="Quanto tempo dedico prima di rivalutare?" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-min-success">Criterio di successo</label>
+          <input id="a-min-success" type="text" class="form-control" placeholder="Come capisco che ha funzionato?" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-min-stop">Criterio di stop</label>
+          <input id="a-min-stop" type="text" class="form-control" placeholder="Quando mi fermo senza rimpianti?" />
+        </div>
+      </div>
+    </details>
+
+    <!-- 7. Decisione -->
+    <details class="card analysis-section">
+      <summary class="analysis-section-title">7. Decisione e prossimo passo</summary>
+      <div class="analysis-section-body">
+        <div class="form-group">
+          <label class="form-label">Decisione</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="a-decision" id="a-dec-develop"  value="develop"  /><label for="a-dec-develop">🚀 Sviluppa</label></div>
+            <div class="radio-option"><input type="radio" name="a-decision" id="a-dec-incubate" value="incubate" /><label for="a-dec-incubate">🌱 Incuba</label></div>
+            <div class="radio-option"><input type="radio" name="a-decision" id="a-dec-integrate" value="integrate"/><label for="a-dec-integrate">🔗 Integra</label></div>
+            <div class="radio-option"><input type="radio" name="a-decision" id="a-dec-archive"  value="archive"  /><label for="a-dec-archive">📦 Archivia</label></div>
+            <div class="radio-option"><input type="radio" name="a-decision" id="a-dec-discard"  value="discard"  /><label for="a-dec-discard">🗑 Scarta</label></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-decision-reason">Ragione della decisione</label>
+          <textarea id="a-decision-reason" class="form-control" rows="3" placeholder="Perché questa scelta?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-decision-next">Prossimo passo da 20 minuti</label>
+          <input id="a-decision-next" type="text" class="form-control" placeholder="Cosa posso fare adesso in 20 minuti?" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="a-decision-review">Data di revisione (opzionale)</label>
+          <input id="a-decision-review" type="date" class="form-control" />
+        </div>
+      </div>
+    </details>
+
+  </div>
+</section>
+
 <nav class="bottom-nav" role="navigation" aria-label="Navigazione principale">
   <button class="nav-btn active" data-screen="home" aria-label="Home">
     <span class="nav-icon">🏠</span>

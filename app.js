@@ -53,6 +53,7 @@ let state = {
   items: DB.load(),
   currentScreen: 'home',
   editingId: null,
+  analysisEditingId: null,
   filters: { search:'', status:'all', type:'all' }
 };
 
@@ -280,6 +281,11 @@ function buildQuickActions(item, compact) {
   if (status !== 'non_adesso') buttons.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','non_adesso')">⏸ Non adesso</button>`);
   if (status !== 'maturato') buttons.push(`<button class="btn btn-sm btn-secondary" onclick="quickStatus('${id}','maturato')">✨ Segna maturato</button>`);
   if (status !== 'archiviato') buttons.push(`<button class="btn btn-sm btn-ghost" onclick="quickStatus('${id}','archiviato')">📦 Archivia</button>`);
+
+  if (item.type === 'idea') {
+    const label = analysisHasContent(item) ? '🧠 Riapri analisi' : '🧠 Sviluppa idea';
+    buttons.push(`<button class="btn btn-sm btn-idea" onclick="openDevelop('${id}')">${label}</button>`);
+  }
 
   if (!compact) {
     buttons.push(`<button class="btn btn-sm btn-secondary" onclick="openEdit('${id}')">✏️ Modifica</button>`);
@@ -515,7 +521,29 @@ function buildMarkdown() {
     if (item.note) md += `- **Note:** ${item.note}\n`;
     if (item.link) md += `- **Link:** ${item.link}\n`;
     if (item.tags && item.tags.length) md += `- **Tag:** ${item.tags.map(t => '#' + t).join(' ')}\n`;
-    md += `- **Creato:** ${fmtDate(item.createdAt)}\n\n`;
+    md += `- **Creato:** ${fmtDate(item.createdAt)}\n`;
+    if (item.type === 'idea' && analysisHasContent(item)) {
+      const dev = item.development;
+      md += `\n#### Analisi stratificata\n\n`;
+      if (dev.core && dev.core.oneSentence) md += `- **Idea in una frase:** ${dev.core.oneSentence}\n`;
+      if (dev.decision && dev.decision.currentDecision) {
+        const DEC = { develop:'Sviluppa', incubate:'Incuba', integrate:'Integra', archive:'Archivia', discard:'Scarta' };
+        md += `- **Decisione:** ${DEC[dev.decision.currentDecision] || dev.decision.currentDecision}\n`;
+      }
+      if (dev.decision && dev.decision.nextStep20Min) md += `- **Prossimo passo (20 min):** ${dev.decision.nextStep20Min}\n`;
+      if (dev.scores) {
+        const sc = dev.scores;
+        md += `- **Punteggi:** Valore ${sc.value}/5, Energia ${sc.energy}/5, Fattibilità ${sc.feasibility}/5, Coerenza ${sc.coherence}/5, Rischio dispersione ${sc.dispersionRisk}/5\n`;
+      }
+      if (dev.minimumVersion) {
+        const mv = dev.minimumVersion;
+        if (mv.minimalForm)     md += `- **Versione minima:** ${mv.minimalForm}\n`;
+        if (mv.excludeForNow)   md += `- **Escludo per ora:** ${mv.excludeForNow}\n`;
+        if (mv.successCriteria) md += `- **Criterio di successo:** ${mv.successCriteria}\n`;
+        if (mv.stopCriteria)    md += `- **Criterio di stop:** ${mv.stopCriteria}\n`;
+      }
+    }
+    md += `\n`;
   });
 
   return md;
@@ -561,14 +589,22 @@ function exportJSON() {
 }
 
 function exportCSV() {
-  const headers = ['id', 'title', 'type', 'status', 'energy', 'why', 'note', 'nextAction', 'link', 'tags', 'createdAt', 'updatedAt'];
+  const headers = ['id','title','type','status','energy','why','note','nextAction','link','tags','createdAt','updatedAt','developed','developmentDecision','developmentNextStep'];
 
-  const rows = state.items.map(item => headers.map(h => {
-    let v = h === 'tags' ? (item.tags || []).join('|') : (item[h] || '');
-    v = String(v).replace(/"/g, '""');
-    if (v.includes(',') || v.includes('"') || v.includes('\n')) v = `"${v}"`;
-    return v;
-  }).join(','));
+  const rows = state.items.map(item => {
+    const devDec = (item.development && item.development.decision) ? item.development.decision : {};
+    return headers.map(h => {
+      let v;
+      if      (h === 'tags')                v = (item.tags || []).join('|');
+      else if (h === 'developed')           v = (item.type === 'idea' && analysisHasContent(item)) ? 'true' : '';
+      else if (h === 'developmentDecision') v = devDec.currentDecision || '';
+      else if (h === 'developmentNextStep') v = devDec.nextStep20Min   || '';
+      else                                  v = item[h] || '';
+      v = String(v).replace(/"/g, '""');
+      if (v.includes(',') || v.includes('"') || v.includes('\n')) v = `"${v}"`;
+      return v;
+    }).join(',');
+  });
 
   downloadFile('spunti-export.csv', [headers.join(','), ...rows].join('\n'), 'text/csv');
   showToast('CSV esportato.');
@@ -617,6 +653,242 @@ function downloadFile(filename, content, type) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }, 100);
+}
+
+// ---- ANALYSIS: SVILUPPA IDEA ----
+
+function getDefaultDevelopment() {
+  return {
+    updatedAt: null,
+    core: { oneSentence:'', centralProblem:'', whyInteresting:'', desiredOutcome:'' },
+    rawDump: '',
+    chunks: { attraction:'', usefulness:'', feasibility:'', context:'', resources:'', obstacles:'', risks:'', energy:'' },
+    layers: { description:'', meaning:'', connections:'', value:'', feasibility:'', risksBlindSpots:'', explorationEscape:'' },
+    scores: { value:0, energy:0, feasibility:0, coherence:0, dispersionRisk:0, urgency:0 },
+    minimumVersion: { minimalForm:'', excludeForNow:'', firstTest:'', timeBox:'', successCriteria:'', stopCriteria:'' },
+    decision: { currentDecision:'', reason:'', nextStep20Min:'', reviewDate:'' }
+  };
+}
+
+function mergeDevelopment(saved) {
+  const def = getDefaultDevelopment();
+  if (!saved) return def;
+  return {
+    updatedAt:      saved.updatedAt || null,
+    core:           { ...def.core,           ...(saved.core           || {}) },
+    rawDump:        saved.rawDump || '',
+    chunks:         { ...def.chunks,         ...(saved.chunks         || {}) },
+    layers:         { ...def.layers,         ...(saved.layers         || {}) },
+    scores:         { ...def.scores,         ...(saved.scores         || {}) },
+    minimumVersion: { ...def.minimumVersion, ...(saved.minimumVersion || {}) },
+    decision:       { ...def.decision,       ...(saved.decision       || {}) }
+  };
+}
+
+function analysisHasContent(item) {
+  if (!item || !item.development) return false;
+  const d = item.development;
+  return !!(
+    (d.core && d.core.oneSentence) ||
+    d.rawDump ||
+    (d.decision && d.decision.currentDecision)
+  );
+}
+
+window.openDevelop = function(id) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  state.analysisEditingId = id;
+  fillAnalysisForm(item);
+  navigate('analysis');
+  window.scrollTo(0, 0);
+};
+
+function fillAnalysisForm(item) {
+  const dev = mergeDevelopment(item.development);
+
+  document.getElementById('analysis-title').textContent = item.title || 'Sviluppa idea';
+  const badge = document.getElementById('analysis-status-badge');
+  if (analysisHasContent(item)) {
+    badge.textContent = 'Sviluppata';
+    badge.className   = 'badge badge-status-attivo';
+  } else {
+    badge.textContent = 'Da sviluppare';
+    badge.className   = 'badge badge-status-inbox';
+  }
+
+  document.getElementById('a-core-sentence').value  = dev.core.oneSentence;
+  document.getElementById('a-core-problem').value   = dev.core.centralProblem;
+  document.getElementById('a-core-why').value       = dev.core.whyInteresting;
+  document.getElementById('a-core-outcome').value   = dev.core.desiredOutcome;
+  document.getElementById('a-raw-dump').value       = dev.rawDump;
+
+  document.getElementById('a-chunk-attraction').value  = dev.chunks.attraction;
+  document.getElementById('a-chunk-usefulness').value  = dev.chunks.usefulness;
+  document.getElementById('a-chunk-feasibility').value = dev.chunks.feasibility;
+  document.getElementById('a-chunk-context').value     = dev.chunks.context;
+  document.getElementById('a-chunk-resources').value   = dev.chunks.resources;
+  document.getElementById('a-chunk-obstacles').value   = dev.chunks.obstacles;
+  document.getElementById('a-chunk-risks').value       = dev.chunks.risks;
+  document.getElementById('a-chunk-energy').value      = dev.chunks.energy;
+
+  document.getElementById('a-layer-description').value = dev.layers.description;
+  document.getElementById('a-layer-meaning').value     = dev.layers.meaning;
+  document.getElementById('a-layer-connections').value = dev.layers.connections;
+  document.getElementById('a-layer-value').value       = dev.layers.value;
+  document.getElementById('a-layer-feasibility').value = dev.layers.feasibility;
+  document.getElementById('a-layer-risks').value       = dev.layers.risksBlindSpots;
+  document.getElementById('a-layer-escape').value      = dev.layers.explorationEscape;
+
+  ['value','energy','feasibility','coherence','dispersion','urgency'].forEach(key => {
+    const dataKey = key === 'dispersion' ? 'dispersionRisk' : key;
+    const slider  = document.getElementById(`a-score-${key}`);
+    const numEl   = document.getElementById(`a-score-${key}-num`);
+    if (!slider || !numEl) return;
+    const val = Number(dev.scores[dataKey]) || 0;
+    slider.value      = val;
+    numEl.textContent = val;
+  });
+
+  document.getElementById('a-min-form').value    = dev.minimumVersion.minimalForm;
+  document.getElementById('a-min-exclude').value = dev.minimumVersion.excludeForNow;
+  document.getElementById('a-min-test').value    = dev.minimumVersion.firstTest;
+  document.getElementById('a-min-timebox').value = dev.minimumVersion.timeBox;
+  document.getElementById('a-min-success').value = dev.minimumVersion.successCriteria;
+  document.getElementById('a-min-stop').value    = dev.minimumVersion.stopCriteria;
+
+  document.querySelectorAll('input[name="a-decision"]').forEach(r => { r.checked = false; });
+  if (dev.decision.currentDecision) {
+    const radio = document.querySelector(`input[name="a-decision"][value="${dev.decision.currentDecision}"]`);
+    if (radio) radio.checked = true;
+  }
+  document.getElementById('a-decision-reason').value = dev.decision.reason;
+  document.getElementById('a-decision-next').value   = dev.decision.nextStep20Min;
+  document.getElementById('a-decision-review').value = dev.decision.reviewDate;
+
+  renderAnalysisSummary();
+}
+
+function collectAnalysisForm() {
+  const scoreFor = key => {
+    const el = document.getElementById(`a-score-${key}`);
+    return el ? parseInt(el.value, 10) : 0;
+  };
+  const decision = document.querySelector('input[name="a-decision"]:checked');
+  return {
+    updatedAt: now(),
+    core: {
+      oneSentence:    document.getElementById('a-core-sentence').value,
+      centralProblem: document.getElementById('a-core-problem').value,
+      whyInteresting: document.getElementById('a-core-why').value,
+      desiredOutcome: document.getElementById('a-core-outcome').value
+    },
+    rawDump: document.getElementById('a-raw-dump').value,
+    chunks: {
+      attraction:  document.getElementById('a-chunk-attraction').value,
+      usefulness:  document.getElementById('a-chunk-usefulness').value,
+      feasibility: document.getElementById('a-chunk-feasibility').value,
+      context:     document.getElementById('a-chunk-context').value,
+      resources:   document.getElementById('a-chunk-resources').value,
+      obstacles:   document.getElementById('a-chunk-obstacles').value,
+      risks:       document.getElementById('a-chunk-risks').value,
+      energy:      document.getElementById('a-chunk-energy').value
+    },
+    layers: {
+      description:       document.getElementById('a-layer-description').value,
+      meaning:           document.getElementById('a-layer-meaning').value,
+      connections:       document.getElementById('a-layer-connections').value,
+      value:             document.getElementById('a-layer-value').value,
+      feasibility:       document.getElementById('a-layer-feasibility').value,
+      risksBlindSpots:   document.getElementById('a-layer-risks').value,
+      explorationEscape: document.getElementById('a-layer-escape').value
+    },
+    scores: {
+      value:          scoreFor('value'),
+      energy:         scoreFor('energy'),
+      feasibility:    scoreFor('feasibility'),
+      coherence:      scoreFor('coherence'),
+      dispersionRisk: scoreFor('dispersion'),
+      urgency:        scoreFor('urgency')
+    },
+    minimumVersion: {
+      minimalForm:     document.getElementById('a-min-form').value,
+      excludeForNow:   document.getElementById('a-min-exclude').value,
+      firstTest:       document.getElementById('a-min-test').value,
+      timeBox:         document.getElementById('a-min-timebox').value,
+      successCriteria: document.getElementById('a-min-success').value,
+      stopCriteria:    document.getElementById('a-min-stop').value
+    },
+    decision: {
+      currentDecision: decision ? decision.value : '',
+      reason:          document.getElementById('a-decision-reason').value,
+      nextStep20Min:   document.getElementById('a-decision-next').value,
+      reviewDate:      document.getElementById('a-decision-review').value
+    }
+  };
+}
+
+function saveAnalysis() {
+  const id = state.analysisEditingId;
+  if (!id) return;
+  const idx = state.items.findIndex(i => i.id === id);
+  if (idx === -1) return;
+  state.items[idx].development = collectAnalysisForm();
+  state.items[idx].updatedAt   = now();
+  DB.save(state.items);
+  state.analysisEditingId = null;
+  showToast('Analisi salvata.');
+  navigate('lista');
+}
+
+function setElText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderAnalysisSummary() {
+  const scoreFor = key => {
+    const el = document.getElementById(`a-score-${key}`);
+    return el ? parseInt(el.value, 10) : 0;
+  };
+  const decision = document.querySelector('input[name="a-decision"]:checked');
+  const coreEl   = document.getElementById('a-core-sentence');
+  const nextEl   = document.getElementById('a-decision-next');
+
+  const scores = {
+    value:       scoreFor('value'),
+    energy:      scoreFor('energy'),
+    feasibility: scoreFor('feasibility'),
+    coherence:   scoreFor('coherence'),
+    dispersion:  scoreFor('dispersion'),
+    urgency:     scoreFor('urgency')
+  };
+
+  const DEC_LABELS = {
+    develop:'🚀 Sviluppa', incubate:'🌱 Incuba', integrate:'🔗 Integra',
+    archive:'📦 Archivia', discard:'🗑 Scarta'
+  };
+
+  setElText('sum-core',        coreEl ? (coreEl.value || '—') : '—');
+  setElText('sum-value',       scores.value       ? `${scores.value}/5`       : '—');
+  setElText('sum-energy',      scores.energy      ? `${scores.energy}/5`      : '—');
+  setElText('sum-feasibility', scores.feasibility ? `${scores.feasibility}/5` : '—');
+  setElText('sum-dispersion',  scores.dispersion  ? `${scores.dispersion}/5`  : '—');
+  setElText('sum-decision',    decision ? (DEC_LABELS[decision.value] || decision.value) : '—');
+  setElText('sum-next',        nextEl ? (nextEl.value || '—') : '—');
+
+  const { value:v, energy:e, feasibility:f, coherence:c, dispersion:d } = scores;
+  let hint = '';
+  if (v >= 4 && e >= 4 && f >= 4 && d <= 3)  hint = 'Buona candidata per una prova concreta.';
+  else if (v >= 4 && f <= 2)                   hint = 'Idea valida ma da ridurre o incubare.';
+  else if (e >= 4 && v <= 2)                   hint = 'Possibile distrazione interessante.';
+  else if (c <= 2 && d >= 4)                   hint = 'Meglio archiviare, integrare o rimandare.';
+  else if (v > 0 || e > 0 || f > 0)           hint = 'Quadro misto: decidi in base a energia disponibile, coerenza e costo.';
+
+  const hintEl   = document.getElementById('analysis-scores-hint');
+  const orientEl = document.getElementById('analysis-orientation');
+  if (hintEl)   hintEl.textContent   = hint;
+  if (orientEl) orientEl.textContent = hint;
 }
 
 function setupEvents() {
@@ -706,6 +978,39 @@ function setupEvents() {
 
   document.getElementById('btn-cancel-delete').addEventListener('click', () => {
     document.getElementById('modal-confirm').classList.remove('open');
+  });
+
+  // Analysis screen
+  document.getElementById('btn-analysis-save').addEventListener('click', saveAnalysis);
+  document.getElementById('btn-analysis-cancel').addEventListener('click', () => {
+    state.analysisEditingId = null;
+    navigate('lista');
+  });
+  document.getElementById('btn-analysis-back').addEventListener('click', () => {
+    state.analysisEditingId = null;
+    navigate('lista');
+  });
+
+  // Score sliders: live number + summary
+  ['value','energy','feasibility','coherence','dispersion','urgency'].forEach(key => {
+    const slider = document.getElementById(`a-score-${key}`);
+    if (!slider) return;
+    slider.addEventListener('input', () => {
+      const numEl = document.getElementById(`a-score-${key}-num`);
+      if (numEl) numEl.textContent = slider.value;
+      renderAnalysisSummary();
+    });
+  });
+
+  // Live summary on core sentence and next step
+  ['a-core-sentence','a-decision-next'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderAnalysisSummary);
+  });
+
+  // Live summary on decision radio
+  document.querySelectorAll('input[name="a-decision"]').forEach(r => {
+    r.addEventListener('change', renderAnalysisSummary);
   });
 }
 
