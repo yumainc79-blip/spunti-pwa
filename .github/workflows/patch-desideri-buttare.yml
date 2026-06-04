@@ -1,0 +1,81 @@
+name: Patch desideri and buttare categories
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-desideri-buttare.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-categories:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add desideri and buttare categories
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          app = Path('app.js')
+          sw = Path('service-worker.js')
+
+          s = index.read_text(encoding='utf-8')
+          if 'data-filter-type="desideri"' not in s:
+              s = s.replace(
+                  '<button class="chip" data-filter-type="idea">💭 Idea</button>',
+                  '<button class="chip" data-filter-type="idea">💭 Idea</button>\n      <button class="chip" data-filter-type="desideri">🌠 Desideri</button>'
+              )
+          if 'data-filter-type="buttare"' not in s:
+              s = s.replace(
+                  '<button class="chip" data-filter-type="comprare">🛒 Comprare</button>',
+                  '<button class="chip" data-filter-type="comprare">🛒 Comprare</button>\n      <button class="chip" data-filter-type="buttare">🚯 Buttare</button>'
+              )
+          if 'id="f-type-desideri"' not in s:
+              s = s.replace(
+                  '<div class="radio-option"><input type="radio" name="f-type" id="f-type-idea" value="idea" /><label for="f-type-idea">💭 Idea</label></div>',
+                  '<div class="radio-option"><input type="radio" name="f-type" id="f-type-idea" value="idea" /><label for="f-type-idea">💭 Idea</label></div>\n        <div class="radio-option"><input type="radio" name="f-type" id="f-type-desideri" value="desideri" /><label for="f-type-desideri">🌠 Desideri</label></div>'
+              )
+          if 'id="f-type-buttare"' not in s:
+              s = s.replace(
+                  '<div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare" value="comprare" /><label for="f-type-comprare">🛒 Comprare</label></div>',
+                  '<div class="radio-option"><input type="radio" name="f-type" id="f-type-comprare" value="comprare" /><label for="f-type-comprare">🛒 Comprare</label></div>\n        <div class="radio-option"><input type="radio" name="f-type" id="f-type-buttare" value="buttare" /><label for="f-type-buttare">🚯 Buttare</label></div>'
+              )
+          index.write_text(s, encoding='utf-8')
+
+          a = app.read_text(encoding='utf-8')
+          if "desideri:'Desideri'" not in a:
+              a = a.replace("  idea:'Idea',\n  provare:'Provare',", "  idea:'Idea',\n  desideri:'Desideri',\n  provare:'Provare',")
+          if "buttare:'Buttare'" not in a:
+              a = a.replace("  comprare:'Comprare',\n  clinico_professionale:'Professionale',", "  comprare:'Comprare',\n  buttare:'Buttare',\n  clinico_professionale:'Professionale',")
+          if "desideri:'🌠'" not in a:
+              a = a.replace("  idea:'💭',\n  provare:'🧪',", "  idea:'💭',\n  desideri:'🌠',\n  provare:'🧪',")
+          if "buttare:'🚯'" not in a:
+              a = a.replace("  comprare:'🛒',\n  clinico_professionale:'💼',", "  comprare:'🛒',\n  buttare:'🚯',\n  clinico_professionale:'💼',")
+          app.write_text(a, encoding='utf-8')
+
+          w = sw.read_text(encoding='utf-8')
+          w = re.sub(r"spunti-v\d+", "spunti-v14", w, count=1)
+          sw.write_text(w, encoding='utf-8')
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html app.js service-worker.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Add desideri and buttare categories"
+            git push
+          fi
