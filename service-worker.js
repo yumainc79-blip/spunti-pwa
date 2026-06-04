@@ -1,4 +1,4 @@
-const CACHE_NAME = 'spunti-v18';
+const CACHE_NAME = 'spunti-v14';
 
 const STATIC_ASSETS = [
   './manifest.webmanifest',
