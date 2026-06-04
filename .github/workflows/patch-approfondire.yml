@@ -1,0 +1,77 @@
+name: Patch approfondire category
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-approfondire.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-category:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add approfondire category
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          app = Path('app.js')
+          sw = Path('service-worker.js')
+
+          s = index.read_text(encoding='utf-8')
+          # Replace accidental Capire if ever present
+          s = s.replace('data-filter-type="capire">🔎 Capire', 'data-filter-type="approfondire">🔎 Approfondire')
+          s = s.replace('id="f-type-capire" value="capire" /><label for="f-type-capire">🔎 Capire</label>', 'id="f-type-approfondire" value="approfondire" /><label for="f-type-approfondire">🔎 Approfondire</label>')
+
+          if 'data-filter-type="approfondire"' not in s:
+              s = s.replace(
+                  '<button class="chip" data-filter-type="idea">💭 Idea</button>',
+                  '<button class="chip" data-filter-type="idea">💭 Idea</button>\n      <button class="chip" data-filter-type="approfondire">🔎 Approfondire</button>'
+              )
+          if 'id="f-type-approfondire"' not in s:
+              s = s.replace(
+                  '<div class="radio-option"><input type="radio" name="f-type" id="f-type-idea" value="idea" /><label for="f-type-idea">💭 Idea</label></div>',
+                  '<div class="radio-option"><input type="radio" name="f-type" id="f-type-idea" value="idea" /><label for="f-type-idea">💭 Idea</label></div>\n        <div class="radio-option"><input type="radio" name="f-type" id="f-type-approfondire" value="approfondire" /><label for="f-type-approfondire">🔎 Approfondire</label></div>'
+              )
+          index.write_text(s, encoding='utf-8')
+
+          a = app.read_text(encoding='utf-8')
+          a = a.replace("capire:'Capire',", "approfondire:'Approfondire',")
+          a = a.replace("capire:'🔎',", "approfondire:'🔎',")
+
+          if "approfondire:'Approfondire'" not in a:
+              a = a.replace("  idea:'Idea',\n  desideri:'Desideri',", "  idea:'Idea',\n  approfondire:'Approfondire',\n  desideri:'Desideri',")
+          if "approfondire:'🔎'" not in a:
+              a = a.replace("  idea:'💭',\n  desideri:'🌠',", "  idea:'💭',\n  approfondire:'🔎',\n  desideri:'🌠',")
+          app.write_text(a, encoding='utf-8')
+
+          w = sw.read_text(encoding='utf-8')
+          m = re.search(r'spunti-v(\d+)', w)
+          if m:
+              next_v = int(m.group(1)) + 1
+              w = re.sub(r'spunti-v\d+', f'spunti-v{next_v}', w, count=1)
+          sw.write_text(w, encoding='utf-8')
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html app.js service-worker.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Add approfondire category"
+            git push
+          fi
